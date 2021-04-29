@@ -1,0 +1,13 @@
+# to check intentory run: ansible-inventory -i ./inventory/my.gcp.yml --list
+plugin: gcp_compute
+zones:
+  - us-central1-a
+projects:
+  - lesson20-vault
+filters: []
+service_account_file: /home/mad/devops13/ansible/secret.json
+auth_kind: serviceaccount
+keyed_groups:
+  - key: zone
+groups:
+  web_servers: "'instance-' in name"

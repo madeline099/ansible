@@ -1,0 +1,25 @@
+  - package:
+        name:
+            - software-properties-common
+            - dirmngr
+
+  - name: add an apt sigining key
+    apt_key:
+        url: https://mariadb.org/mariadb_release_siging_key.asc
+        state: present
+
+  - apt_repository:
+        repo: 'deb [arch=amd64,arm64,i386,ppc64el] https://mirror.rackspace.com/mariadb/repo/10.5/debian streach main'
+        state: present
+
+  - package: name="mariadb-server"
+
+  - name: check for root password config
+    stat:
+        path: /root/.my.cnf
+    register: mysql_root_result
+
+  - name: create root password
+    set_fact:
+        mysql_root_passwd: "{{ lookup('password','/dev/null chars=ascii_letters,digits length=32') }}"
+    when: mysql_root_result.stat.exits == false 
